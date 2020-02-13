@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    denormalize_fields (1.0.0)
+    denormalize_fields (1.0.1)
       activerecord (>= 4.1.14, < 7.0.0)
 
 GEM
@@ -160,8 +160,8 @@ PLATFORMS
 DEPENDENCIES
   denormalize_fields!
   rails (>= 4.1.14, < 7.0.0)
-  rake (~> 12.0)
-  rspec (~> 3.0)
+  rake
+  rspec
   rspec-rails
   sqlite3
 
