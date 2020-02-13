@@ -11,8 +11,7 @@ Gem::Specification.new do |s|
                     'denormalize: { fields: :updated_at }`.'
   s.homepage      = 'https://www.github.com/jaynetics/denormalize_fields'
 
-  s.files         = ['lib/denormalize_fields.rb',
-                     'lib/denormalize_fields/version.rb']
+  s.files         = Dir[File.join('lib', '**', '*.rb')]
 
   s.authors       = ['Janosch Müller']
   s.email         = ['janosch84@gmail.com']
