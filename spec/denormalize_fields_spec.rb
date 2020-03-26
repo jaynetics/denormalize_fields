@@ -45,7 +45,9 @@ RSpec.describe DenormalizeFields do
   it 'joins multiple source fields to a String using spaces' do
     king = King.create!(first_name: 'Friedrich', last_name: 'Barbarossa')
     pizza = king.pizzas.create!(owner_name: 'Friedrich Barbarossa')
-    expect { king.update!(first_name: 'King', last_name: 'Nothing') }
+    expect { king.update!(first_name: 'King', last_name: 'Awesome') }
+      .to change { pizza.owner_name }.to('King Awesome')
+    expect { king.update!(last_name: 'Nothing') }
       .to change { pizza.owner_name }.to('King Nothing')
   end
 
