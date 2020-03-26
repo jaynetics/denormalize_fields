@@ -57,6 +57,11 @@ Alternatively `fields` also accepts a `Hash` to map to other fields on the relat
 class Rapper < ApplicationRecord
   has_many :cars, denormalize: { fields: { name: :owner } }
 end
+
+# multiple fields can be mapped to one, their values will be joined with " "
+class Rapper < ApplicationRecord
+  has_many :cars, denormalize: { fields: { %i[first_name last_name] => :owner } }
+end
 ```
 
 ## Caveats

@@ -33,8 +33,22 @@ module DenormalizeFields
   end
 
   def changeset(record:, mapping:)
-    record.saved_changes.slice(*mapping.keys).each.with_object({}) do |(k, v), a|
-      a[mapping.fetch(k.to_sym)] = v.last
+    keys = mapping.keys.flatten
+    record.saved_changes.slice(*keys).each.with_object({}) do |(k, v), acc|
+      changed_field = k.to_sym
+      new_value = v.last
+
+      mapping.each do |source, dest|
+        if source.is_a?(Array) && source.include?(changed_field)
+          if acc.key?(dest)
+            acc[dest] += " #{new_value}"
+          else
+            acc[dest] = new_value.to_s
+          end
+        elsif source == changed_field
+          acc[dest] = new_value
+        end
+      end
     end
   end
 

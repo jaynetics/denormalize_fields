@@ -22,8 +22,14 @@ ActiveRecord::Schema.define(version: 20151110173325) do
     t.integer 'happiness'
   end
 
+  create_table 'kings', force: :cascade do |t|
+    t.string 'first_name'
+    t.string 'last_name'
+  end
+
   create_table 'pizzas', force: :cascade do |t|
     t.integer 'programmer_id'
+    t.integer 'king_id'
     t.string 'owner_name'
     t.integer 'happiness'
   end

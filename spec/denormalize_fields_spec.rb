@@ -42,6 +42,13 @@ RSpec.describe DenormalizeFields do
       .and change { comment.topic }.to('Pizza')
   end
 
+  it 'joins multiple source fields to a String using spaces' do
+    king = King.create!(first_name: 'Friedrich', last_name: 'Barbarossa')
+    pizza = king.pizzas.create!(owner_name: 'Friedrich Barbarossa')
+    expect { king.update!(first_name: 'King', last_name: 'Nothing') }
+      .to change { pizza.owner_name }.to('King Nothing')
+  end
+
   it 'does not get stuck in a loop (and accepts single args)' do
     symbiont_a = Symbiont.create!
     symbiont_b = symbiont_a.create_symbiont!
