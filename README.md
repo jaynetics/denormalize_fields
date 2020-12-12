@@ -1,7 +1,7 @@
 # DenormalizeFields
 
 [![Gem Version](https://badge.fury.io/rb/denormalize_fields.svg)](http://badge.fury.io/rb/denormalize_fields)
-[![Build Status](https://travis-ci.org/jaynetics/denormalize_fields.svg?branch=master)](https://travis-ci.org/jaynetics/denormalize_fields)
+[![Build Status](https://github.com/jaynetics/denormalize_fields/workflows/tests/badge.svg)](https://github.com/jaynetics/denormalize_fields/actions)
 
 This gem adds a `denormalize` option to ActiveRecord relation definitions, so that updates on one record are forwarded to its dependent records.
 
