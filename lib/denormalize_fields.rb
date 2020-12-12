@@ -62,7 +62,7 @@ module DenormalizeFields
     errors.details.each do |key, array|
       field = mapping.rassoc(key.to_sym).first
       array.each do |details|
-        to_record.errors.add(field, details[:error], details.except(:error))
+        to_record.errors.add(field, details[:error], **details.except(:error))
       end
     end
   end
