@@ -4,12 +4,34 @@ require 'denormalize_fields/version'
 module DenormalizeFields
   module_function
 
-  def denormalize(fields:, from:, onto:, prefix: nil)
+  def denormalize(fields:, from:, onto:, prefix: nil, **options)
     mapping = cast_to_mapping(fields, prefix: prefix)
+    validate_options(**options)
 
     from.after_save do
-      DenormalizeFields.call(record: self, relation_name: onto, mapping: mapping)
+      DenormalizeFields.call(
+        record:        self,
+        relation_name: onto,
+        mapping:       mapping,
+        **options,
+      )
     end
+  end
+
+  def validate_options(**options)
+    validate_conditional(options[:if])
+    validate_conditional(options[:unless])
+    unsupported = (options.keys - %i[if unless]).empty? ||
+      raise(ArgumentError, "unsupported denormalize options: #{unsupported}")
+  end
+
+  CONDITIONAL_CLASSES = [NilClass, TrueClass, FalseClass, Symbol, Proc]
+
+  def validate_conditional(arg)
+    CONDITIONAL_CLASSES.include?(arg.class) || raise(
+      ArgumentError,
+      "`if:` option must be a #{CONDITIONAL_CLASSES.join('/')}, got: #{arg.class}"
+    )
   end
 
   def cast_to_mapping(fields, prefix: nil)
@@ -21,7 +43,10 @@ module DenormalizeFields
     end
   end
 
-  def call(record:, relation_name:, mapping:)
+  def call(record:, relation_name:, mapping:, **options)
+    return unless conditional_passes?(options[:if],     record, false)
+    return unless conditional_passes?(options[:unless], record, true)
+
     changeset = DenormalizeFields.changeset(record: record, mapping: mapping)
     return if changeset.empty?
 
@@ -30,6 +55,21 @@ module DenormalizeFields
         changeset, to: related_record, owner: record, mapping: mapping
       )
     end
+  end
+
+  def conditional_passes?(conditional, record, inverted)
+    return true if conditional.nil?
+
+    result =
+      if conditional.respond_to?(:call)
+        record.instance_exec(&conditional)
+      elsif conditional.class == Symbol
+        record.send(conditional)
+      else # true, false
+        conditional
+      end
+
+    inverted ? !result : !!result
   end
 
   def changeset(record:, mapping:)

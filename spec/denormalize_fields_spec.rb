@@ -97,4 +97,22 @@ RSpec.describe DenormalizeFields do
     comment = post.comments.create!(body: 'bar')
     expect { post.update!(body: 'qux') }.not_to change { comment.body }
   end
+
+  it 'can be toggled via if: option and with a method name argument' do
+    symbiont_a = Symbiont.create!
+    symbiont_b = symbiont_a.create_symbiont!
+    expect { symbiont_a.update!(happiness: 9000) }
+      .not_to change { symbiont_b.happiness }
+  end
+
+  it 'can be toggled via unless: option and with a proc argument' do
+    blog = Blog.create!
+    post = blog.posts.create!(body: 'foo')
+    expect { blog.update!(topic: 'XXX') }.not_to change { post.topic }
+  end
+
+  it 'does not allow weird stuff as conditionals' do
+    expect { Blog.has_many :posts, denormalize: { fields: :topic, if: 7 } }
+      .to raise_error(ArgumentError, /if:/)
+  end
 end

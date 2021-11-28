@@ -12,10 +12,9 @@ module DenormalizeFields
       return unless options = association.options[OPTION]
 
       DenormalizeFields.denormalize(
-        fields: options[:fields],
-        from:   association.active_record,
-        onto:   association.name,
-        prefix: options[:prefix],
+        from: association.active_record,
+        onto: association.name,
+        **options,
       )
     end
   end
