@@ -62,9 +62,13 @@ end
 class Rapper < ApplicationRecord
   has_many :cars, denormalize: { fields: { %i[first_name last_name] => :owner } }
 end
+```
 
-# conditional denormalization is also supported
+Conditional denormalization is also supported:
+
+```ruby
 class Blog < ApplicationRecord
+  # don't remove topic from posts when it is removed from blog
   has_many :posts, denormalize: { fields: :topic, if: :topic? }
 end
 ```
