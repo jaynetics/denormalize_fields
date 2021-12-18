@@ -72,12 +72,32 @@ RSpec.describe DenormalizeFields do
     end
   end
 
-  it 'reveals errors from related records' do
+  it 'reveals errors from denormalized fields on related records' do
     programmer = Programmer.create!(name: 'Igor')
     pizza = programmer.create_pizza!(owner_name: 'Igor')
     # Note: there is no validation on Programmer#name.
     expect { programmer.update(name: '') }
       .to change { programmer.errors[:name].present? }.to(true)
+  end
+
+  it 'fails if the related record has errors on non-denormalized fields' do
+    blog = Blog.create!
+    post = blog.posts.create!(body: 'foo')
+    post.update_column(:body, '') # invalid value
+    blog.topic = 'new topic'
+    expect { blog.save }.not_to change { post.reload.topic }
+    expect { blog.save! }
+      .to raise_error(DenormalizeFields::RelatedRecordInvalid)
+  end
+
+  it 'fails if the related record has errors, even with validate: false' do
+    blog = Blog.create!
+    post = blog.posts.create!(body: 'foo')
+    post.update_column(:body, '') # invalid value
+    blog.topic = 'new topic'
+    expect { blog.save(validate: false) }.not_to change { post.reload.topic }
+    expect { blog.save!(validate: false) }
+      .to raise_error(DenormalizeFields::RelatedRecordInvalid)
   end
 
   it 'does not update related records if owner validation fails' do

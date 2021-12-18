@@ -112,9 +112,10 @@ module DenormalizeFields
   # TODO: use Errors#import when it becomes available in rails 6.1 or 6.2
   def copy_errors(errors, to_record:, mapping:)
     errors.details.each do |key, array|
-      field = mapping.rassoc(key.to_sym).first
-      array.each do |details|
-        to_record.errors.add(field, details[:error], **details.except(:error))
+      Array(mapping.rassoc(key.to_sym)).compact.each do |field|
+        array.each do |details|
+          to_record.errors.add(field, details[:error], **details.except(:error))
+        end
       end
     end
   end
