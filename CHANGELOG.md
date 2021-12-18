@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+### Added
+- instead of ActiveRecord::RecordInvalid, raise DenormalizedFields::RelatedRecordInvalid
+  - inherits from ActiveRecord::RecordInvalid so rescuing is not affected
+  - makes it more obvious where the error is coming from
+
 ## v1.2.1
 ### Fixed
 - relaxed dependency spec to include rails 7

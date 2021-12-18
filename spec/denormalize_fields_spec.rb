@@ -63,8 +63,13 @@ RSpec.describe DenormalizeFields do
     pizza = programmer.create_pizza!(owner_name: 'Igor')
     # Note: there is no validation on Programmer#name.
     expect(programmer.update(name: '')).to be false
-    expect { programmer.update!(name: '') }
-      .to raise_error(ActiveRecord::RecordInvalid)
+    expect { programmer.update!(name: '') }.to raise_error do |e|
+      expect(e).to be_a(ActiveRecord::RecordInvalid)
+      expect(e).to be_a(DenormalizeFields::RelatedRecordInvalid)
+      expect(e.record).to eq(pizza)
+      expect(e.owner).to eq(programmer)
+      expect(e.mapping).to eq(name: :owner_name)
+    end
   end
 
   it 'reveals errors from related records' do

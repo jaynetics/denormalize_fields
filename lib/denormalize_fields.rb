@@ -4,6 +4,18 @@ require 'denormalize_fields/version'
 module DenormalizeFields
   module_function
 
+  class ArgumentError < ::ArgumentError; end
+
+  class RelatedRecordInvalid < ::ActiveRecord::RecordInvalid
+    attr_accessor :owner, :mapping
+
+    def initialize(record:, owner:, mapping:)
+      super(record)
+      self.owner = owner
+      self.mapping = mapping
+    end
+  end
+
   def denormalize(fields:, from:, onto:, prefix: nil, **options)
     mapping = cast_to_mapping(fields, prefix: prefix)
     validate_options(**options)
@@ -94,7 +106,7 @@ module DenormalizeFields
     return if to.new_record? ? to.valid? : to.save
 
     DenormalizeFields.copy_errors(to.errors, to_record: owner, mapping: mapping)
-    raise(ActiveRecord::RecordInvalid, to)
+    raise RelatedRecordInvalid.new(record: to, owner: owner, mapping: mapping)
   end
 
   # TODO: use Errors#import when it becomes available in rails 6.1 or 6.2
