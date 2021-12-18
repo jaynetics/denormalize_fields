@@ -5,7 +5,7 @@
 
 This gem adds a `denormalize` option to ActiveRecord relation definitions, so that updates on one record are forwarded to its dependent records.
 
-Tested on Rails 6, but should work down to Rails 4.1.
+Tested on Rails 7, but should work down to Rails 4.1.
 
 ## Installation
 
