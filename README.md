@@ -39,7 +39,7 @@ User.first.update!(first_name: 'Wanja')
 User.first.posts.pluck(:first_name) # => ['Wanja', 'Wanja']
 ```
 
-Any validation errors of dependent records are bubbled up to the source record.
+Any validation errors in denormalized fields of dependent records are bubbled up to the source record.
 
 There is also a `prefix` option:
 
