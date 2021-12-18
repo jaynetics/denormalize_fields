@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.3.0
 ### Added
 - instead of ActiveRecord::RecordInvalid, raise DenormalizedFields::RelatedRecordInvalid
   - inherits from ActiveRecord::RecordInvalid so rescuing is not affected
